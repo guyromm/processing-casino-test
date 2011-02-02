@@ -131,7 +131,7 @@ sk.attachFunction = function(P) {
 	}
 	this.move = function(nx,ny,state,deg,cb) {
 	    if (!deg) deg=0;
-	    console.log("deg is %o",deg);
+	    //console.log("deg is %o",deg);
 	    this.movx = nx; this.movy = ny; this.movdeg=deg; this.cb = cb;
 	   
 	}
@@ -452,7 +452,7 @@ sk.attachFunction = function(P) {
 		var chip_placement = function(mych) {
 		    window.setTimeout(function() {
 			var newpos = 'p'+(parseInt(Math.random()*11)+1);
-			console.log('chip_placement cb. now at %o, going to %o',(mych.slot?mych.slot.name:'noname'),newpos);
+			//console.log('chip_placement cb. now at %o, going to %o',(mych.slot?mych.slot.name:'noname'),newpos);
 			if (mych.slot) mych.slot.unplace(mych);
 			slots[newpos].place(mych,chip_placement);
 		    },Math.random()*10000);
