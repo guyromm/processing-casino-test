@@ -1,0 +1,512 @@
+<html>
+<head>
+<script type='text/javascript' src="processing.js"></script>
+</head>
+<body>
+
+<canvas id='port' width="988" height="849" ></canvas>
+<script type='text/javascript'>
+
+if (typeof(console)=='undefined') console = {log: function() { }};
+
+var sk = new Processing.Sketch();
+var imgcache = ["table.png","cardback.png","kd.png","qs.png","chip_side_cyan.png","chip_top_cyan.png",'shield.png'];
+for (var i=0;i<imgcache.length;i++) sk.imageCache.add(imgcache[i]);
+
+sk.attachFunction = function(P) {
+
+    var crd,crd2,crd3;
+    var freechips = [];
+    var freecards = [];
+    var buttons = [];
+    var slots = {};
+    var fnt,bind,tbl;
+    var CARD_WIDTH = P.width/21.5;
+    var CARD_HEIGHT = P.height/13;
+    var CX1 = 410; var CY1 = 250;
+    var CX2 = CX1+CARD_WIDTH*1.5 ; var CY2 = CY1;
+    var CX3 = CX1+CARD_WIDTH*3 ; var CY3 = CY1;
+    
+    var DIMS = {'side-chip':[20,17],'top-chip':[21,23],'side-card':[CARD_WIDTH,CARD_HEIGHT]};
+
+
+    var POS1_X = 275;
+    var POS1_Y = 280;
+    var POS1_DEG = 60;
+
+    var POS2_X = 360;
+    var POS2_Y = 382;
+    var POS2_DEG = 30;
+
+    var POS3_X = 483;
+    var POS3_Y = 425;
+    var POS3_DEG = 0;
+
+    function BetIndicator(min,max) {
+	this.curmin = 0 ; this.min = min;
+	this.curmax = 0 ; this.max = max;
+	
+	this.update = function() {
+	    if (this.curmin!=this.min)
+		this.curmin+=(this.min-this.curmin)*0.05;
+	    if (!this.curmax!=this.max)
+		this.curmax+=(this.max-this.curmax)*0.05;
+	    if (Math.abs(this.min-this.curmin)<1) this.curmin = this.min;
+	    if (Math.abs(this.max-this.curmax)<1) this.curmax = this.max;
+	    
+	}
+	this.display = function() { 
+	    p.text("Min:$"+parseInt(this.curmin),280,83)
+	    P.text("Max:$"+parseInt(this.curmax),282,100);
+	}
+    }
+
+    function Card(kind,x,y,state) {
+
+	this.kind = kind;
+	this.movx = this.curx = x;
+	this.movy = this.cury = y;
+	if (!state) state='back';
+	this.state=state;
+	this.movdeg = this.angle=0;
+	this.flipstate=0;
+	this.movspeed=0.05;
+
+	this.update = function() {
+	    var cancb="yes";
+	    if (this.movx!=this.curx || this.movy!=this.cury)
+	    {
+		var dst = P.dist(this.curx,this.cury,this.movx,this.movy);
+		if (dst<1)
+		{
+		    this.curx = this.movx;
+		    this.cury = this.movy;
+		}
+		else
+		{
+		    //console.log("dst is %o",dst);
+		    var nx = (this.movx-this.curx)*this.movspeed;
+		    var ny = (this.movy-this.cury)*this.movspeed;
+		    this.curx+=nx; this.cury+=ny;
+		}
+		cancb="moving";
+	    }
+	    if (Math.abs(this.angle-this.movdeg)<1)
+	    {
+		this.angle=this.movdeg;
+		this.movdeg=null;
+	    }
+	    else if (this.movdeg!=null && this.angle!=this.movdeg)
+	    {
+		if (this.angle<this.movdeg)
+		    this.angle+=Math.abs(this.angle-this.movdeg)*this.movspeed;
+		else
+		    this.angle-=Math.abs(this.angle-this.movdeg)*this.movspeed;
+		cancb="rotating ("+this.angle+","+this.movdeg+")";
+	    }
+	    
+	    if (this.state=='flip')
+	    {
+		this.flipstate+=this.movspeed*35;
+		if (this.flipstate>=100) 
+		{
+		    this.flipstate=0;
+		    if (this.prevstate=='open') this.state='back';
+		    else if (this.prevstate=='back') this.state='open';
+		}
+		cancb="flipping";
+	    }
+	    if (cancb=='yes' && this.cb)
+	    {
+		//alert('got cb, can cb!');
+		var cbf = this.cb;
+		this.cb=null;
+		cbf(this);
+
+	    }
+	    else if (this.cb)
+	    {
+		//console.log("got cb, nocan cb (%o)",cancb);
+	    }
+	}
+	this.move = function(nx,ny,state,deg,cb) {
+	    if (!deg) deg=0;
+	    console.log("deg is %o",deg);
+	    this.movx = nx; this.movy = ny; this.movdeg=deg; this.cb = cb;
+	   
+	}
+	this.flip = function() {
+	    this.prevstate = this.state;
+	    this.state='flip';
+	    this.flipstate=0;
+	}
+	this.display = function() {
+	    var imgu = ''; var scl=1; var elv=1; //elevation
+	    if (this.state=='back')
+		imgu = 'cardback.png';		
+	    else if (this.state=='open')
+	    {
+		imgu = this.kind+'.png';
+	    }
+	    else if (this.state=='flip')
+	    {
+		if ((this.prevstate=='back' && this.flipstate<50) || (this.prevstate=='open' && this.flipstate>=50))
+		    imgu = 'cardback.png';
+		else if ((this.prevstate=='open' && this.flipstate<50) || (this.prevstate=='back' && this.flipstate>=50))
+		    imgu = this.kind+'.png';
+		if (this.flipstate<50)
+		{
+		    scl=1-(this.flipstate*2/100);
+		    //elv=1+(this.flipstate*2/100);
+		}
+		else if (this.flipstate>=50)
+		{
+		    scl=((this.flipstate-50) * 2/100);
+		    //elv=2-((this.flipstate-50) * 2/100);
+		}
+		//console.log("flipstate %o, imgu: %o, scl: %o, elv: %o",this.flipstate,imgu,scl,elv);
+	    }
+	    var img = P.loadImage(imgu);
+
+	    P.pushMatrix();
+	    P.translate(this.curx,this.cury);
+	    P.scale(1*elv,scl*elv);
+	    P.rotate(P.radians(this.angle));
+
+	    //P.image(img,this.curx,this.cury,P.width/21.5,P.height/13);
+	    P.image(img,0,0,CARD_WIDTH,CARD_HEIGHT);
+	    P.popMatrix();
+
+	}
+	return this;
+    }
+
+    function Slot(x,y,chst,nm,deg) {
+	if (!deg) deg = 0;
+	this.angle = deg;
+	this.name = nm;
+	this.chipstate = chst;
+	this.x = x; 
+	this.y = y;
+	this.chips = [];
+
+	this.unplace = function(ch) {
+	    delete ch.slot;
+	    var idx = this.chips.indexOf(ch);
+	    if (idx!=-1)
+		this.chips.splice(idx,1);
+	    return ch;
+	}
+	this.place = function(ch,cb) {
+	    ch.slot = this;
+	    var ypos = this.y+(DIMS[this.chipstate][1]/(this.chipstate=='side-chip'?5:10)*this.chips.length);
+	    //console.log("starting move with cb %o, deg %o",cb,deg);
+	    ch.move(this.x,ypos,this.chipstate,deg,cb);
+	    this.chips.push(ch);
+	}
+	this.update = function() {
+	    for (var i=0;i<this.chips.length;i++)
+		this.chips[i].update();
+	}
+	this.display = function() {
+	    //console.log("displaying %o chips on %o,%o",this.chips.length,this.x,this.y);
+	    if (this.chipstate=='side-chip' || this.chipstate=='side-card')
+	    {
+		for (var i=0;i<this.chips.length;i++) this.chips[i].display();
+	    }
+	    else if (this.chipstate=='top-chip')
+	    {
+		//we use the pushmatrix trick here to get the chips to stack from the bottom up.
+		P.pushMatrix();
+		P.translate(0,(this.chips.length*DIMS[this.chipstate][1]/10+ DIMS[this.chipstate][1])*-1);
+		for (var i=this.chips.length-1;i>=0;i--) 
+		{
+		    var ch = this.chips[i];
+		    ch.display();
+		}
+		P.popMatrix();
+
+	    }
+	}
+	return this;
+    }
+
+    function Chip(x,y,col,state) {
+	this.movspeed = 0.1;
+	if (!state) state='side-chip';
+	this.state = state;
+	this.x = x; this.y = y; this.col = col; this.state = state;
+	this.move = function(x,y,state,deg,cb) {
+	    //console.log("cb = %o",cb);
+	    this.tx = x;
+	    this.ty = y;
+	    this.tstate = state;
+	    this.cb = cb;
+	    //console.log("cb was just set to %o",cb);
+	}
+	this.update = function() {
+	    //console.log("cb: %o",this.cb);
+	    if (this.tx!=this.x || this.ty!=this.y)
+	    {
+		var dst = P.dist(this.x,this.y,this.tx,this.ty);
+		if (dst<1)
+		{
+		    this.x = this.tx;
+		    this.y = this.ty;
+		}
+		else
+		{
+		    //console.log("dst is %o",dst);
+		    var nx = (this.tx-this.x)*this.movspeed;
+		    var ny = (this.ty-this.y)*this.movspeed;
+		    this.x+=nx; this.y+=ny;
+		}
+	    }
+	    else if (this.cb) //typeof(this.cb)!='undefined')
+	    {
+		//console.log('about to invoke cb')
+		var cbf = this.cb;
+		this.cb=null;
+		cbf(this);
+
+	    }
+	    else if (this.tstate)
+	    {
+		this.state = this.tstate;
+		delete this.tstate;
+	    }
+	    //else console.log('this.cb = %o',this.cb);
+	}
+	this.display = function() {
+	    var img = P.loadImage('chip_'+this.state.replace('-chip','')+'_'+this.col+'.png');
+	    //console.log('about to display chip on %o,%o',this.x,this.y);
+	    P.image(img,this.x,this.y,DIMS[this.state][0],DIMS[this.state][1]);
+	}
+	return this;
+    }
+
+    function Button(nm,x,y) {
+	this.name = nm;
+	this.x = x;
+	this.y = y;
+	this.spin=0;
+	this.update = function() {
+	    var spinfactor=4;
+	    if (this.mouseover || this.spin>=spinfactor) this.spin+=spinfactor;
+	    if (this.spin>=100) this.spin=0;
+	}
+	this.mouseMoved = function() {
+	    //console.log('%o,%o',P.mouseX,P.mouseY);
+
+	    if (!this.img) return;
+
+	    var myx = this.x; //+this.img.width/2;
+	    var myy = this.y;//+this.img.height/2;
+	    var dist = P.dist(P.mouseX,P.mouseY,myx,myy);
+	    //console.log(dist);
+	    if (dist<=60)
+	    {
+		//console.log('%o.mouseover=true',this.name);
+		this.mouseover=true;
+	    }
+	    else
+	    {
+		this.mouseover=false;
+	    }
+
+	}
+	this.display = function() {
+
+	    if (!this.img) this.img = P.loadImage(this.name+'.png');
+	    P.pushMatrix();
+
+	    var scl=1;
+	    if (this.spin && this.spin<50) 
+		scl-=this.spin/100*2;
+	    else if (this.spin && this.spin>=50)
+		scl=Math.abs(1-this.spin/100*2);
+	    //P.translate(this.img.width*scl,0);
+	    P.imageMode(P.CENTER);
+	    P.image(this.img,this.x,this.y,this.img.width*scl,this.img.height);
+	    P.imageMode(P.CORNER);
+	    P.popMatrix();
+
+	}
+	return this;
+    }
+
+    function ButtonX2(nm,x,y) {
+	Button.call(this,nm,x,y)
+
+	this.display = function() {
+
+	    if (!this.img) this.img = P.loadImage(this.name+'.png');
+	    P.pushMatrix();
+	    
+	    var scl=1;
+	    if (this.spin && this.spin<50) 
+	    {
+		scl-=this.spin/100*2*30;
+		//scl+=15;
+	    }
+	    else if (this.spin && this.spin>=50)
+	    {
+		scl=(30-Math.abs(1-(50-this.spin)/100*2*30))*-1;
+//		scl+=15;
+	    }
+
+
+	    //P.translate(this.img.width*scl,0);
+	    //console.log('spin = %o, scl = %o',this.spin,scl);
+	    P.imageMode(P.CENTER);
+	    P.translate(this.x,this.y);
+	    P.rotate(P.radians(scl));
+	    //console.log("drawing image %o,%o %o,%o",this.x,this.y,this.img.width,this.img.height);
+	    P.image(this.img
+		    ,0 //this.x
+		    ,0 //this.y
+		    ,this.img.width
+		    ,this.img.height);
+	    P.imageMode(P.CORNER);
+	    P.popMatrix();
+	}
+    }
+    //ButtonX2.prototype.constructor = Button;
+    
+    /**/
+
+    //a Button function
+
+    P.setup = function() {
+	P.size(988,849);
+
+	fnt = P.loadFont("NimbusBold48.vlw");
+	P.textFont(fnt,16);
+
+	tbl = P.loadImage("table.png");
+
+	var btn = new Button('shield',P.width-P.width*0.42,P.height-P.height*0.11);
+	buttons.push(btn);
+	var btn = new ButtonX2('x2',P.width-P.width*0.57,P.height-P.height*0.11);
+	buttons.push(btn);
+	
+	bind = new BetIndicator(0,100);
+
+	/*
+	  //manual card instantiation
+	  crd = new Card('kd',202,97,'back');
+	  crd2 = new Card('qs',190,97,'open');
+	  crd3 = new Card('qs',190,97,'back');*/
+	var CARDS_AMT=10;
+	var CHIPS_AMT=45;
+	var cres = /cards=([0-9]+)/.exec(location.href);
+	if (cres) CARDS_AMT=parseInt(cres[1]);
+	var cres = /chips=([0-9]+)/.exec(location.href);
+	if (cres) CHIPS_AMT=parseInt(cres[1]);
+	
+	//chip slots
+	slots['p1'] = new Slot(150,275,'top-chip','p1');
+	slots['p2'] = new Slot(215,410,'top-chip','p2');
+	slots['p3'] = new Slot(245,445,'top-chip','p3');
+	slots['p4'] = new Slot(365,525,'top-chip','p4');
+	slots['p5'] = new Slot(420,535,'top-chip','p5');
+	slots['p6'] = new Slot(P.width-slots['p5'].x,slots['p5'].y,'top-chip','p6');
+	slots['p7'] = new Slot(P.width-slots['p4'].x,slots['p4'].y,'top-chip','p7');
+	slots['p8'] = new Slot(P.width-slots['p3'].x,slots['p3'].y,'top-chip','p8');
+	slots['p9'] = new Slot(P.width-slots['p2'].x,slots['p2'].y,'top-chip','p9');
+	slots['p10'] = new Slot(P.width-slots['p1'].x,slots['p1'].y,'top-chip','p10');
+	slots['p11'] = new Slot(371,74,'side-chip','dealer1'); //dealer
+
+	//card "slots"
+	slots['c1'] = new Slot(POS1_X,POS1_Y,'side-card','c1',POS1_DEG);
+	slots['c2'] = new Slot(POS2_X,POS2_Y,'side-card','c2',POS2_DEG);	
+	slots['c3'] = new Slot(POS3_X,POS3_Y,'side-card','c3',POS3_DEG);	
+	slots['c4'] = new Slot(P.width-POS2_X-10,POS2_Y+20,'side-card','c4',360-POS2_DEG);	
+	slots['c5'] = new Slot(P.width-POS1_X,POS1_Y+35,'side-card','c5',360-POS1_DEG);	
+
+	slots['c6'] = new Slot(CX1,CY1,'side-card','c6',0);
+	slots['c7'] = new Slot(CX2,CY2,'side-card','c7',0);
+	slots['c8'] = new Slot(CX3,CY3,'side-card','c8',0);
+	var types = ['qs','kd'];
+	for (var i=0;i<CARDS_AMT;i++)
+	{
+	    var crd = new Card(types[parseInt(Math.random()*2)],190,97,'back');
+	    freecards.push(crd);
+	    var card_placement = function(mycrd) {
+		window.setTimeout(function() {
+		    if (Math.random()>=0.3) mycrd.flip();
+		    //console.log('in card_placement');
+		    var newpos = 'c'+(parseInt(Math.random()*8)+1);
+		    if (mycrd.slot) mycrd.slot.unplace(mycrd);
+		    slots[newpos].place(mycrd,card_placement);
+		},Math.random()*10000);
+	    }
+	    card_placement(crd);
+	}
+	//this is the chips flying
+	for (var i=0;i<CHIPS_AMT;i++)
+	{
+	    window.setTimeout(function() {
+		var ch = new Chip(Math.random()*P.width,0,'cyan','side-chip');
+		freechips.push(ch);
+		var chip_placement = function(mych) {
+		    window.setTimeout(function() {
+			var newpos = 'p'+(parseInt(Math.random()*11)+1);
+			console.log('chip_placement cb. now at %o, going to %o',(mych.slot?mych.slot.name:'noname'),newpos);
+			if (mych.slot) mych.slot.unplace(mych);
+			slots[newpos].place(mych,chip_placement);
+		    },Math.random()*10000);
+		    //console.log(newpos);
+		}
+		chip_placement(ch)
+	    },Math.random()*1000);
+	}
+
+
+
+
+	var bindrand = function() {
+	    bind.min=Math.random()*100;
+	    bind.max=Math.random()*200;
+	    window.setTimeout(bindrand,4500);
+	}
+	//2nd stage action demo
+	window.setTimeout(bindrand,2500);
+    }
+    P.mouseClicked = function() {
+	P.paused=! P.paused;
+    }
+    P.draw = function() {
+	if (P.paused) return;
+	P.image(tbl,0,0,P.width,P.height);
+
+	bind.update();
+	bind.display();
+
+	for (var sln in slots)
+	{
+	    slots[sln].update();
+	    slots[sln].display();
+	}
+
+	P.fill(0,0,0);
+
+	for (var i=0;i<buttons.length;i++)
+	{
+	    buttons[i].update();
+	    buttons[i].display();
+	}
+    }
+    P.mouseMoved = function() { 
+	for (var i=0;i<buttons.length;i++)
+	{
+	    buttons[i].mouseMoved();
+	}
+    }
+}
+var byId = document.getElementById;
+var c = document.getElementById('port');
+var p = new Processing(c,sk);
+</script>
+</body>
+</html>

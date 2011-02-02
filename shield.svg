@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="39.242001"
+   height="52.415001"
+   id="svg13543"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="shield.svg">
+  <defs
+     id="defs13545">
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1733_"
+       gradientUnits="userSpaceOnUse"
+       x1="363.918"
+       y1="515.24707"
+       x2="311.85349"
+       y2="515.24707">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22685" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22687" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22689" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22691" />
+      <stop
+         offset="0.6"
+         style="stop-color:#F6EFB9"
+         id="stop22693" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22695" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1732_"
+       gradientUnits="userSpaceOnUse"
+       x1="337.72659"
+       y1="515.54303"
+       x2="390.73831"
+       y2="515.54303">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22670" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22672" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22674" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22676" />
+      <stop
+         offset="0.6"
+         style="stop-color:#F6EFB9"
+         id="stop22678" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22680" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1731_"
+       gradientUnits="userSpaceOnUse"
+       x1="365.5303"
+       y1="553.53607"
+       x2="299.2442"
+       y2="471.67969">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22655" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22657" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22659" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22661" />
+      <stop
+         offset="0.6"
+         style="stop-color:#F6EFB9"
+         id="stop22663" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22665" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1730_"
+       gradientUnits="userSpaceOnUse"
+       x1="337.2207"
+       y1="516.88959"
+       x2="364.53391"
+       y2="516.88959">
+      <stop
+         offset="0"
+         style="stop-color:#582A2B"
+         id="stop22648" />
+      <stop
+         offset="1"
+         style="stop-color:#933541"
+         id="stop22650" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1729_"
+       gradientUnits="userSpaceOnUse"
+       x1="347.76559"
+       y1="516.89447"
+       x2="298.30151"
+       y2="515.16718">
+      <stop
+         offset="0"
+         style="stop-color:#B23C4B"
+         id="stop22641" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22643" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1728_"
+       gradientUnits="userSpaceOnUse"
+       x1="327.87299"
+       y1="496.38669"
+       x2="338.52109"
+       y2="511.59381">
+      <stop
+         offset="0"
+         style="stop-color:#582A2B"
+         id="stop22632" />
+      <stop
+         offset="1"
+         style="stop-color:#933541"
+         id="stop22634" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1727_"
+       gradientUnits="userSpaceOnUse"
+       x1="320.90921"
+       y1="495.1748"
+       x2="363.02731"
+       y2="537.29303">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22613" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22615" />
+      <stop
+         offset="0.15"
+         style="stop-color:#391D00"
+         id="stop22617" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22619" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22621" />
+      <stop
+         offset="0.55"
+         style="stop-color:#F6EFB9"
+         id="stop22623" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22625" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1726_"
+       gradientUnits="userSpaceOnUse"
+       x1="335.94919"
+       y1="493.1084"
+       x2="357.01941"
+       y2="500.77731">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22596" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22598" />
+      <stop
+         offset="0.15"
+         style="stop-color:#391D00"
+         id="stop22600" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22602" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22604" />
+      <stop
+         offset="0.55"
+         style="stop-color:#F6EFB9"
+         id="stop22606" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22608" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       id="SVGID_1725_"
+       gradientUnits="userSpaceOnUse"
+       x1="317.50391"
+       y1="505.98929"
+       x2="344.02179"
+       y2="495.2753">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22579" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22581" />
+      <stop
+         offset="0.15"
+         style="stop-color:#391D00"
+         id="stop22583" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22585" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22587" />
+      <stop
+         offset="0.55"
+         style="stop-color:#F6EFB9"
+         id="stop22589" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22591" />
+    </linearGradient>
+    <linearGradient
+       id="SVGID_1724_"
+       gradientUnits="userSpaceOnUse"
+       x1="354.1543"
+       y1="527.88281"
+       x2="310.67569"
+       y2="482.85941">
+      <stop
+         offset="0"
+         style="stop-color:#97702F"
+         id="stop22562" />
+      <stop
+         offset="0.03"
+         style="stop-color:#764103"
+         id="stop22564" />
+      <stop
+         offset="0.15"
+         style="stop-color:#391D00"
+         id="stop22566" />
+      <stop
+         offset="0.36"
+         style="stop-color:#AB813B"
+         id="stop22568" />
+      <stop
+         offset="0.38"
+         style="stop-color:#B89555"
+         id="stop22570" />
+      <stop
+         offset="0.55"
+         style="stop-color:#F6EFB9"
+         id="stop22572" />
+      <stop
+         offset="1"
+         style="stop-color:#FFFFFF"
+         id="stop22574" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(37.43,16.619683)"
+       y2="482.85941"
+       x2="310.67569"
+       y1="527.88281"
+       x1="354.1543"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient13541"
+       xlink:href="#SVGID_1724_"
+       inkscape:collect="always" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="13.152481"
+     inkscape:cy="28.876953"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="515"
+     inkscape:window-height="459"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata13548">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-355.379,-506.15468)">
+    <path
+       style="fill:url(#linearGradient13541);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375,506.15468 c -5.748,3.033 -12.666,6.429 -19.621,6.979 0,19.313 1.182,36.795 19.621,45.435 18.439,-8.64 19.621,-26.121 19.621,-45.435 -7.351,-0.404 -14.265,-4.114 -19.621,-6.979 z"
+       id="path22576"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1725_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375,506.15468 c -5.703,3.011 -12.559,6.376 -19.461,6.967 l 1.303,3.836 35.752,-0.323 2.027,-3.378 v -0.122 c -7.351,-0.405 -14.265,-4.114 -19.621,-6.98 z"
+       id="path22593"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1726_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375,506.15468 -0.021,0.011 v 8.47 l 11.279,2.057 6.336,-0.058 2.027,-3.378 v -0.122 c -7.351,-0.405 -14.265,-4.114 -19.621,-6.98 z"
+       id="path22610"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1727_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375,507.75268 c -5.572,2.94 -12.279,6.232 -19.021,6.768 -0.002,18.725 1.145,35.673 19.021,44.049 17.877,-8.376 19.023,-25.324 19.023,-44.049 -7.126,-0.393 -13.831,-3.989 -19.023,-6.768 z"
+       id="path22627"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375.352,509.48268 c -5.168,2.744 -11.387,5.813 -17.641,6.313 0,17.465 1.063,33.273 17.641,41.086 16.58,-7.813 17.641,-23.621 17.641,-41.086 -6.61,-0.366 -12.827,-3.721 -17.641,-6.313 z"
+       id="path22629"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1728_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 374.821,509.08368 c -5.168,2.744 -11.389,5.813 -17.643,6.313 0,17.465 1.063,33.272 17.643,41.085 16.578,-7.813 18.105,-23.309 18.105,-40.775 -6.609,-0.366 -13.293,-4.031 -18.105,-6.623 z"
+       id="path22636"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:#933541;fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375,509.83968 c -5.115,2.7 -11.27,5.721 -17.461,6.212 0,17.187 1.053,32.742 17.461,40.43 16.408,-7.688 17.461,-23.243 17.461,-40.43 -6.543,-0.36 -12.695,-3.661 -17.461,-6.212 z"
+       id="path22638"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1729_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 357.967,517.08468 c 0.152,28.699 13.189,36.761 15.521,37.193 l 0.836,-42.316 c -2.699,2.207 -10.56,5.262 -16.357,5.123 z"
+       id="path22645"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1730_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 391.901,517.89668 c -0.152,28.697 -15.32,38.181 -16.738,36.584 l 0.381,-42.113 c 2.394,1.598 13.605,5.973 16.357,5.529 z"
+       id="path22652"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1731_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 374.635,517.64868 c 4.832,7.254 11.176,11.486 11.174,17.529 0,5.438 -3.023,6.647 -4.836,6.646 -2.416,-10e-4 -4.074,-3.128 -4.072,-7.358 0,-1.208 -1.209,-1.208 -1.209,0 -0.002,6.044 1.051,7.961 2.26,10.983 l -6.648,-0.002 c 1.209,-3.021 2.574,-4.938 2.576,-10.981 0,-1.21 -1.209,-1.21 -1.209,-10e-4 -0.002,4.835 -1.971,7.356 -4.389,7.354 -1.813,0 -5.438,-1.209 -5.438,-6.648 0.002,-6.121 6.953,-10.27 11.791,-17.522 z"
+       id="path22667"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1732_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 375.485,518.87468 c 4.693,6.521 10.326,10.608 10.324,16.304 0,5.438 -3.023,6.646 -4.836,6.646 -2.416,-10e-4 -4.074,-3.128 -4.072,-7.358 0,-1.208 -1.209,-1.208 -1.209,0 -0.002,6.044 1.051,7.961 2.26,10.983 l -2.707,-10e-4 0.24,-26.574 z"
+       id="path22682"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+    <path
+       style="fill:url(#SVGID_1733_);fill-rule:evenodd"
+       inkscape:connector-curvature="0"
+       clip-rule="evenodd"
+       d="m 373.662,545.44868 -2.359,-10e-4 c 1.111,-2.78 2.357,-4.626 2.551,-9.611 l -0.192,9.612 0,0 z m 0.217,-10.907 0.32,-16.258 c -4.807,6.863 -11.354,10.946 -11.355,16.888 0,5.439 3.625,6.648 5.438,6.648 2.418,0.002 4.387,-2.52 4.389,-7.354 0,-1.21 1.209,-1.21 1.209,0 v 0.076 z"
+       id="path22697"
+       inkscape:export-filename="/home/milez/sketchbook/scene/shield.png"
+       inkscape:export-xdpi="173.5"
+       inkscape:export-ydpi="173.5" />
+  </g>
+</svg>

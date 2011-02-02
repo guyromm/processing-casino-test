@@ -1,0 +1,27 @@
+<html>
+<head>
+<script type='text/javascript' src="processing.js"></script>
+</head>
+<body>
+
+<canvas id='port' width="988" height="849" ></canvas>
+<script type='text/javascript'>
+
+var sk = new Processing.Sketch();
+sk.imageCache.add("table.png");
+sk.attachFunction = function(P) {
+    var tbl;
+    P.setup = function() {
+	P.size(988,849);
+	tbl = P.loadImage("table.png");
+    }
+    P.draw = function() {
+	P.image(tbl,0,0,P.width,P.height);
+	}
+}
+var byId = document.getElementById;
+var c = document.getElementById('port');
+var p = new Processing(c,sk);
+</script>
+</body>
+</html>
