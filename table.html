@@ -399,10 +399,13 @@ sk.attachFunction = function(P) {
 	  crd3 = new Card('qs',190,97,'back');*/
 	var CARDS_AMT=10;
 	var CHIPS_AMT=45;
+	P.NOBG=false;
 	var cres = /cards=([0-9]+)/.exec(location.href);
 	if (cres) CARDS_AMT=parseInt(cres[1]);
 	var cres = /chips=([0-9]+)/.exec(location.href);
 	if (cres) CHIPS_AMT=parseInt(cres[1]);
+	var cres = /nobg=1/.exec(location.href);
+	if (cres) P.NOBG=true;
 	
 	//chip slots
 	slots['p1'] = new Slot(150,275,'top-chip','p1');
@@ -478,7 +481,10 @@ sk.attachFunction = function(P) {
     }
     P.draw = function() {
 	if (P.paused) return;
-	P.image(tbl,0,0,P.width,P.height);
+	if (P.NOBG)
+	    P.rect(0,0,P.width,P.height);
+	else
+	    P.image(tbl,0,0,P.width,P.height);
 
 	bind.update();
 	bind.display();
