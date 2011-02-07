@@ -7,7 +7,10 @@
 <canvas id='port' width="988" height="849" ></canvas>
 <script type='text/javascript'>
 
+var c = document.getElementById('port');
+
 if (typeof(console)=='undefined') console = {log: function() { }};
+var APPLE = /(iPad|iPhone)/.exec(navigator.userAgent)?true:false;
 
 var sk = new Processing.Sketch();
 var imgcache = ["table.png","cardback.png","kd.png","qs.png","chip_side_cyan.png","chip_top_cyan.png",'shield.png'];
@@ -21,8 +24,9 @@ sk.attachFunction = function(P) {
     var buttons = [];
     var slots = {};
     var fnt,bind,tbl;
-    var CARD_WIDTH = P.width/21.5;
-    var CARD_HEIGHT = P.height/13;
+    var RATIO = 1;
+    var CARD_WIDTH = P.width/21.5/RATIO;
+    var CARD_HEIGHT = P.height/13/RATIO;
     var CX1 = 410; var CY1 = 250;
     var CX2 = CX1+CARD_WIDTH*1.5 ; var CY2 = CY1;
     var CX3 = CX1+CARD_WIDTH*3 ; var CY3 = CY1;
@@ -56,8 +60,11 @@ sk.attachFunction = function(P) {
 	    
 	}
 	this.display = function() { 
-	    p.text("Min:$"+parseInt(this.curmin),280,83)
-	    P.text("Max:$"+parseInt(this.curmax),282,100);
+	    if (P.SHOW_INDICATOR)
+	    {
+		p.text("Min:$"+parseInt(this.curmin),280,83)
+		P.text("Max:$"+parseInt(this.curmax),282,100);
+	    }
 	}
     }
 
@@ -166,7 +173,7 @@ sk.attachFunction = function(P) {
 		}
 		//console.log("flipstate %o, imgu: %o, scl: %o, elv: %o",this.flipstate,imgu,scl,elv);
 	    }
-	    var img = P.loadImage(imgu);
+
 
 	    P.pushMatrix();
 	    P.translate(this.curx,this.cury);
@@ -174,7 +181,19 @@ sk.attachFunction = function(P) {
 	    P.rotate(P.radians(this.angle));
 
 	    //P.image(img,this.curx,this.cury,P.width/21.5,P.height/13);
-	    P.image(img,0,0,CARD_WIDTH,CARD_HEIGHT);
+	    if (false && APPLE)
+	    {
+		//P.rect(0,0,CARD_WIDTH,CARD_HEIGHT);
+		P.line(0,0,CARD_WIDTH,0);
+		P.line(0,0,0,CARD_HEIGHT);
+		P.line(CARD_WIDTH,CARD_HEIGHT,CARD_WIDTH,0);
+		P.line(CARD_WIDTH,CARD_HEIGHT,0,CARD_HEIGHT);
+	    }
+	    else
+	    {
+		var img = P.loadImage(imgu);
+		P.image(img,0,0,CARD_WIDTH,CARD_HEIGHT);
+	    }
 	    P.popMatrix();
 
 	}
@@ -376,29 +395,29 @@ sk.attachFunction = function(P) {
     /**/
 
     //a Button function
-
+    var origwidth = 988; 
+    var origheight = 849;
     P.setup = function() {
-	P.size(988,849);
+
+
+
+	P.WIDTH=origwidth/RATIO;
+	P.HEIGHT=origheight/RATIO;
+
+	P.size(origwidth,origheight);
+	P.frameRate(26);
+
         P.smooth();
 	fnt = P.loadFont("NimbusBold48.vlw");
 	P.textFont(fnt,16);
 
 	tbl = P.loadImage("table.png");
-
-	var btn = new Button('shield',P.width-P.width*0.42,P.height-P.height*0.11);
-	buttons.push(btn);
-	var btn = new ButtonX2('x2',P.width-P.width*0.57,P.height-P.height*0.11);
-	buttons.push(btn);
 	
 	bind = new BetIndicator(0,100);
 
-	/*
-	  //manual card instantiation
-	  crd = new Card('kd',202,97,'back');
-	  crd2 = new Card('qs',190,97,'open');
-	  crd3 = new Card('qs',190,97,'back');*/
 	var CARDS_AMT=10;
 	var CHIPS_AMT=45;
+	P.SHOW_INDICATOR=true;
 	P.NOBG=false;
 	var cres = /cards=([0-9]+)/.exec(location.href);
 	if (cres) CARDS_AMT=parseInt(cres[1]);
@@ -406,30 +425,43 @@ sk.attachFunction = function(P) {
 	if (cres) CHIPS_AMT=parseInt(cres[1]);
 	var cres = /nobg=1/.exec(location.href);
 	if (cres) P.NOBG=true;
-	
+	var cres = /noind=1/.exec(location.href);
+	if (cres) P.SHOW_INDICATOR=false;
+	var cres = /apple=1/.exec(location.href);
+	if (cres) APPLE=1;
+
+	if (!P.NOBG)
+	{
+	    var btn = new Button('shield',P.width-P.width*0.42,P.height-P.height*0.11);
+	    buttons.push(btn);
+	    var btn = new ButtonX2('x2',P.width-P.width*0.57,P.height-P.height*0.11);
+	    buttons.push(btn);
+	}
+
 	//chip slots
-	slots['p1'] = new Slot(150,275,'top-chip','p1');
-	slots['p2'] = new Slot(215,410,'top-chip','p2');
-	slots['p3'] = new Slot(245,445,'top-chip','p3');
-	slots['p4'] = new Slot(365,525,'top-chip','p4');
-	slots['p5'] = new Slot(420,535,'top-chip','p5');
+	var m = RATIO;
+	slots['p1'] = new Slot(150/m,275/m,'top-chip','p1');
+	slots['p2'] = new Slot(215/m,410/m,'top-chip','p2');
+	slots['p3'] = new Slot(245/m,445/m,'top-chip','p3');
+	slots['p4'] = new Slot(365/m,525/m,'top-chip','p4');
+	slots['p5'] = new Slot(420/m,535/m,'top-chip','p5');
 	slots['p6'] = new Slot(P.width-slots['p5'].x,slots['p5'].y,'top-chip','p6');
 	slots['p7'] = new Slot(P.width-slots['p4'].x,slots['p4'].y,'top-chip','p7');
 	slots['p8'] = new Slot(P.width-slots['p3'].x,slots['p3'].y,'top-chip','p8');
 	slots['p9'] = new Slot(P.width-slots['p2'].x,slots['p2'].y,'top-chip','p9');
 	slots['p10'] = new Slot(P.width-slots['p1'].x,slots['p1'].y,'top-chip','p10');
-	slots['p11'] = new Slot(371,74,'side-chip','dealer1'); //dealer
+	slots['p11'] = new Slot(371/m,74/m,'side-chip','dealer1'); //dealer
 
 	//card "slots"
-	slots['c1'] = new Slot(POS1_X,POS1_Y,'side-card','c1',POS1_DEG);
-	slots['c2'] = new Slot(POS2_X,POS2_Y,'side-card','c2',POS2_DEG);	
-	slots['c3'] = new Slot(POS3_X,POS3_Y,'side-card','c3',POS3_DEG);	
+	slots['c1'] = new Slot(POS1_X/m,POS1_Y/m,'side-card','c1',POS1_DEG);
+	slots['c2'] = new Slot(POS2_X/m,POS2_Y/m,'side-card','c2',POS2_DEG);	
+	slots['c3'] = new Slot(POS3_X/m,POS3_Y/m,'side-card','c3',POS3_DEG);	
 	slots['c4'] = new Slot(P.width-POS2_X-10,POS2_Y+20,'side-card','c4',360-POS2_DEG);	
 	slots['c5'] = new Slot(P.width-POS1_X,POS1_Y+35,'side-card','c5',360-POS1_DEG);	
 
-	slots['c6'] = new Slot(CX1,CY1,'side-card','c6',0);
-	slots['c7'] = new Slot(CX2,CY2,'side-card','c7',0);
-	slots['c8'] = new Slot(CX3,CY3,'side-card','c8',0);
+	slots['c6'] = new Slot(CX1/m,CY1/m,'side-card','c6',0);
+	slots['c7'] = new Slot(CX2/m,CY2/m,'side-card','c7',0);
+	slots['c8'] = new Slot(CX3/m,CY3/m,'side-card','c8',0);
 	var types = ['qs','kd'];
 	for (var i=0;i<CARDS_AMT;i++)
 	{
@@ -482,7 +514,19 @@ sk.attachFunction = function(P) {
     P.draw = function() {
 	if (P.paused) return;
 	if (P.NOBG)
-	    P.rect(0,0,P.width,P.height);
+	{
+	    //P.rect(0,0,P.width,P.height);
+	    P.background(255);
+
+	    /*c.style.height=0;
+	    c.style.width=0;
+
+	    c.style.height = P.HEIGHT;
+	    c.style.width=P.WIDTH;*/
+
+	    //P.size(0,0);
+	    //P.size(P.WIDTH,P.HEIGHT);
+	}
 	else
 	    P.image(tbl,0,0,P.width,P.height);
 
@@ -502,6 +546,13 @@ sk.attachFunction = function(P) {
 	    buttons[i].update();
 	    buttons[i].display();
 	}
+	//var color = P.color(255,255,255);
+	P.fill(255,255,255);
+	P.rect(0,0,50,30,255);
+	//var color = P.color(0,0,0);
+	//P.stroke(color);
+	P.fill(0,0,0);
+	P.text(P.__frameRate,0,20);
     }
     P.mouseMoved = function() { 
 	for (var i=0;i<buttons.length;i++)
@@ -511,7 +562,7 @@ sk.attachFunction = function(P) {
     }
 }
 var byId = document.getElementById;
-var c = document.getElementById('port');
+
 var p = new Processing(c,sk);
 </script>
 </body>
