@@ -51,14 +51,201 @@
 	height:92px;
 	background-image:url(x2.png);
     }
+    .osd65 {
+	width:160px;
+	height:160px;	
+	position:absolute;
+	background-image:url(pause.png);
+
+    }
 </style>
 </head>
 <body>
   <div id='port'></div>
+
   <script type='text/javascript'>  
+var csstm;
+    var ifrStop = function(fn) {
+	var ifr = document.getElementById(fn);
+	if (ifr)
+	{
+	    if (fn=='css')
+		window.clearTimeout(csstm);
+	    document.body.removeChild(ifr);
+	}
+    }
+
+    var ifrPlay = function(fn) {
+	var ifr = document.getElementById(fn);
+	if (ifr)	{    
+	    //document.body.removeChild(ifr);
+	    ifr.setAttribute('src', '/casinotest/'+fn+audiosuffix);
+	    return;
+	}
+	var created=false;
+	if (!ifr)
+	{
+	    ifr=document.createElement("iframe");
+	    ifr.setAttribute('width', '1px');
+	    ifr.setAttribute('height', '1px');
+	    ifr.setAttribute('scrolling', 'no');
+	    ifr.style.border="0px";
+	    ifr.setAttribute('id',fn);
+
+	    ifr.addEventListener('load',function() {	
+		if (fn=='css') 
+		{
+		    csstm = window.setTimeout(function() { ifrPlay(fn); },13000);
+		}
+		//CANNOT GET THIS TO WORK, ABOVE IS A HACK WHICH MIGHT NOT WORK DEPENDS ON NETWORK SPEED.
+		/*//alert(document.getElementsByTagName('iframe')[0].contentWindow.document.getElementsByTagName('embed')[0].tagName);
+		document.getElementsByTagName('iframe')[0].contentWindow.document.getElementsByTagName('embed')[0].addEventListener('ended',function() {
+		    console.log('end play detected at %o',fn);
+		    document.body.removeChild(ifr); //console.log("%o loaded",ifr);
+		    if (fn=='css') frPlay(fn);
+		},false);*/
+	    });
+	    created=true;
+	}
+
+	ifr.setAttribute('src', '/casinotest/'+fn+audiosuffix);
+	if (created) document.body.appendChild(ifr);
+
+    }
+
+
+    //old iOS 3.x method, does not work on iOs 4.x, and the document.getElementById('audioel').load() & .play does not work, either.
+  function fakeClick(fn) {
+
+      var a = document.createElement('a');
+      a.id = 'fakeClick';
+      a.href='#';
+      a.addEventListener('click',function(e) {
+                    e.preventDefault();
+                    fn();
+      },false);
+
+      document.body.appendChild(a);
+
+            var evt, 
+      el = document.getElementById('fakeClick');
+
+            if (document.createEvent) {
+                evt = document.createEvent("MouseEvents");
+                if (evt.initMouseEvent) {
+                    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    el.dispatchEvent(evt);
+                }
+            }
+
+      document.body.removeChild(el);
+        }
+//whether to force html5 audio
+var FORCEAUDIO = (/forceaudio=1/.exec(location.href)?true:false);
+var APPLE = /(iPad|iPhone)/.exec(navigator.userAgent)?true:false;
+var WEBKIT = /WebKit/.exec(navigator.userAgent)?true:false;
+if (/nowebkit=1/.exec(location.href)) WEBKIT=false;
+var audiosuffix = (APPLE?'.mp3':'.ogg'); //apple likes mp3, ff & chrome audio tag plays .ogg
     var c = document.getElementById('port');
 if (typeof(console)=='undefined') console = {log: function() { }};
-var APPLE = /(iPad|iPhone)/.exec(navigator.userAgent)?true:false;
+
+var chrome =  (/Chrome/.exec(navigator.userAgent))?true:false;
+var sounds = ['chip','card','coins','css'];
+var controls={};
+
+
+if (!APPLE || FORCEAUDIO) { //instantiate normal html audio controls only for non apple
+    for (var i=0;i<sounds.length;i++)
+    {
+	//console.log("creating control for sound %o",sounds[i]);
+	var el = document.createElement('audio');
+	el.setAttribute('id',sounds[i]);
+	
+	el.src=sounds[i]+audiosuffix;
+	el.preload='auto';
+	el.controls=true; el.autobuffer=true;
+	if (!FORCEAUDIO) el.style.display='none';
+	if (sounds[i]=='css') 
+	{
+	    el.addEventListener('ended',function() 
+				{
+				    bgmusicplay();
+				},false);
+	}
+	document.body.appendChild(el);
+	console.log("appended %o",el);
+	controls[sounds[i]]=el;
+    }
+}
+
+var chipsndplay = function() {
+    if (NOSOUND) return;
+    if (!FORCEAUDIO && APPLE) return;
+	controls['chip'].play();
+}
+var cardsndplay = function() {
+    if (NOSOUND) return;
+    if (!FORCEAUDIO && APPLE) return;
+	controls['card'].play();
+}
+var coinssndplay = function() {    
+    if (NOSOUND) return;
+    if (!FORCEAUDIO && APPLE) return;
+	controls['coins'].play();
+}
+
+var bgmusicpause = function() {
+    if (NOSOUND) return;
+    if (APPLE && !FORCEAUDIO) { ifrStop('css'); }
+    else
+	controls['css'].pause();
+}
+var bgmusicplay = function() {
+    if (NOSOUND) return;
+    if (APPLE && !FORCEAUDIO) ifrPlay('css'); //we can only reliably play 1 background track with the iframe hack.
+    else 
+    {
+	fakeClick(function() {
+	    controls['css'].play();
+	});
+    }
+}
+
+//don't use SM2 at the time being
+
+/*
+soundManager.url = 'soundmanager/swf/'; // directory where SM2 .SWFs live
+soundManager.useFlashBlock = false;
+
+var bgmusic,chipsnd,cardsnd,coinssnd;
+var chipsndplay = function() {
+    var chipsnd = soundManager.createSound({id:'chip'+parseInt(Math.random()*10),url:'chip.mp3',multiShotEvents:true});
+    chipsnd.play();
+}
+
+var cardsndplay = function() {
+    //var cardsnd = soundManager.createSound({id:'card'+parseInt(Math.random()*10),url:'card.mp3',multiShotEvents:true});
+    cardsnd.play();
+}
+
+var coinssnd = function() {    
+    //var coinssnd = soundManager.createSound({id:'coins',url:'coins.mp3',multiShotEvents:true});
+    coinssnd.play();
+}
+soundManager.onready(function() {
+    chipsnd = soundManager.createSound({id:'chip',url:'chip.mp3'});
+    cardsnd = soundManager.createSound({id:'card',url:'card.mp3'});
+    coinssnd = soundManager.createSound({id:'coins',url:'coins.mp3'});
+    bgmusic = soundManager.createSound({id: 'css',url: 'css.mp3',volume:20});
+    bgmusic.play();
+
+});
+
+soundManager.ontimeout(function() {
+    alert('timeout starting sm2');
+  // (Optional) Hrmm, SM2 could not start. Show an error, etc.?
+
+});*/
 
 var imglist = ["table","cardback","kd","qs","chip_side_cyan","chip_top_cyan",'shield'];
 var images = {};
@@ -68,32 +255,72 @@ for (var i=0;i<imglist.length;i++)
     images[imglist[i]].src = imglist[i]+'.png'; //);
 }
 
-    function BetIndicator(min,max) {
-	this.curmin = 0 ; this.min = min;
-	this.curmax = 0 ; this.max = max;
-	
-	this.update = function() {
-	    if (this.curmin!=this.min)
-		this.curmin+=(this.min-this.curmin)*0.05;
-	    if (!this.curmax!=this.max)
-		this.curmax+=(this.max-this.curmax)*0.05;
-	    if (Math.abs(this.min-this.curmin)<1) this.curmin = this.min;
-	    if (Math.abs(this.max-this.curmax)<1) this.curmax = this.max;
-	    
-	}
-	this.display = function() { 
-	    if (!this.el)
-	    {
-		this.el = document.createElement('div');
-		this.el.className = 'betindicator';
-		c.appendChild(this.el);
-	    }
-	    //console.log(this.el)
-	    /*p.text("Min:$"+parseInt(this.curmin),280,83)
-	    P.text("Max:$"+parseInt(this.curmax),282,100);*/
-	    this.el.innerHTML='Min:$'+parseInt(this.curmin)+'<br />'+"Max:$"+parseInt(this.curmax);
-	}
+function OSD65(x,y,opa) {
+    this.x =x;
+    this.y =y;
+    if (!opa) opa=0;
+    this.opacity=opa;
+    this.direction='none';
+    this.speed=0.1;
+    this.show = function() {
+	this.direction='show';
     }
+    this.fade = function() {
+	this.direction='fade';
+    }
+    this.update = function() {
+	if (this.direction=='show' && this.opacity<1) this.opacity+=this.speed;
+	else if (this.direction=='fade' && this.opacity>0) this.opacity-=this.speed;
+    }
+    this.display = function() {
+	if (!this.el)
+	{
+	    this.el = document.createElement('div');
+	    this.el.className = 'osd65';
+	    this.el.style.zIndex=5;
+	    c.appendChild(this.el);
+	}
+ 	this.el.style.top=this.y;
+	this.el.style.left=this.x;
+	this.el.style.opacity=this.opacity;
+	var scl = 1/this.opacity;
+	if (scl>3) scl=3;
+
+	var wkt='scale('+scl+')';
+	this.el.style.transform=
+	    this.el.style.OTransform=
+	    this.el.style.MozTransform=
+	    this.el.style.webkitTransform=
+	    wkt;
+
+    }
+}
+function BetIndicator(min,max) {
+    this.curmin = 0 ; this.min = min;
+    this.curmax = 0 ; this.max = max;
+    
+    this.update = function() {
+	if (this.curmin!=this.min)
+	    this.curmin+=(this.min-this.curmin)*0.05;
+	if (!this.curmax!=this.max)
+	    this.curmax+=(this.max-this.curmax)*0.05;
+	if (Math.abs(this.min-this.curmin)<1) this.curmin = this.min;
+	if (Math.abs(this.max-this.curmax)<1) this.curmax = this.max;
+	
+    }
+    this.display = function() { 
+	if (!this.el)
+	{
+	    this.el = document.createElement('div');
+	    this.el.className = 'betindicator';
+	    c.appendChild(this.el);
+	}
+	//console.log(this.el)
+	/*p.text("Min:$"+parseInt(this.curmin),280,83)
+	  P.text("Max:$"+parseInt(this.curmax),282,100);*/
+	this.el.innerHTML='Min:$'+parseInt(this.curmin)+'<br />'+"Max:$"+parseInt(this.curmax);
+    }
+}
 
 function Slot(x,y,chst,nm,deg) {
     if (!deg) deg = 0;
@@ -199,9 +426,10 @@ function Chip(x,y,col,state) {
 	{
 	    //console.log('about to invoke cb')
 	    var cbf = this.cb;
+	    chipsndplay();
 	    this.cb=null;
 	    cbf(this);
-
+	    
 	}
 	else if (this.tstate)
 	{
@@ -217,9 +445,20 @@ function Chip(x,y,col,state) {
 	    c.appendChild(this.el);
 	}
 	this.el.className=this.state;
-	this.el.style.top = this.y;
-	this.el.style.left = this.x;
-	
+	var mantrans=false;
+	if (!WEBKIT)
+	{
+	    this.el.style.top = this.y;
+	    this.el.style.left = this.x;
+	    mantrans=true;
+	}
+	else
+	{
+	    var wkt ='translate3d('+parseInt(this.x)+'px,'+parseInt(this.y)+'px,0px)';
+	    this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+	}
+	//alert(wkt); throw "bah "+WEBKIT;
+
 	//var img = P.loadImage('chip_'+this.state.replace('-chip','')+'_'+this.col+'.png');
 	//console.log('about to display chip on %o,%o',this.x,this.y);
 	//P.image(img,this.x,this.y,DIMS[this.state][0],DIMS[this.state][1]);
@@ -235,7 +474,7 @@ function Card(kind,x,y,state) {
     this.state=state;
     this.movdeg = this.angle=0;
     this.flipstate=0;
-    this.movspeed=0.05;
+    this.movspeed=0.1;
 
 
     this.update = function() {
@@ -289,6 +528,7 @@ function Card(kind,x,y,state) {
 	if (cancb=='yes' && this.cb)
 	{
 	    //alert('got cb, can cb!');
+
 	    var cbf = this.cb;
 	    this.cb=null;
 	    cbf(this);
@@ -301,6 +541,8 @@ function Card(kind,x,y,state) {
 	if (!this.angle && this.angle!=0) throw "nan!";
     }
     this.move = function(nx,ny,state,deg,cb) {
+	cardsndplay();
+
 	if (!deg) deg=0;
 	//console.log("deg is %o",deg);
 	this.movx = nx; this.movy = ny; this.movdeg=deg; this.cb = cb;
@@ -369,14 +611,24 @@ function Card(kind,x,y,state) {
 	    //console.log('starting off with %o,%o',this.curx,this.cury);
 	}
 	this.el.className='card'+(imgu?' '+imgu:'');
-	this.el.style.top=parseInt(this.cury);
-	this.el.style.left=parseInt(this.curx);	
+	//lets try use translate() instead of .left/.top
+	if (!WEBKIT) //looks like ff / opera do not support translate\translate3d() transforms
+	{
+	    this.el.style.top=parseInt(this.cury);
+	    this.el.style.left=parseInt(this.curx);
+	    var mantrans=true;
+	}
+	else
+	    var mantrans=false;
+
 	if (this.horizflip)
 	    var sclstr = scl+',1';
 	else
 	    var sclstr = '1,'+scl;
-	var wkt = 'rotate('+parseInt(this.angle)+'deg) scale('+sclstr+')';
+	
+	var wkt =(!mantrans?'translate3d('+parseInt(this.curx)+'px,'+parseInt(this.cury)+'px,0px)':'')+' rotate('+parseInt(this.angle)+'deg) scale('+sclstr+')';
 	this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+
     }
     return this;
 }
@@ -499,7 +751,10 @@ function Card(kind,x,y,state) {
 var CARDS_AMT=10;
 var CHIPS_AMT=45;
 var SHOW_INDICATOR=true;
-NOBG=false;
+var NOBG=false;
+var NOSOUND=false;
+var cres = /nosound=([0-9]+)/.exec(location.href);
+if (cres) NOSOUND=true;
 var cres = /cards=([0-9]+)/.exec(location.href);
 if (cres) CARDS_AMT=parseInt(cres[1]);
 var cres = /chips=([0-9]+)/.exec(location.href);
@@ -539,13 +794,16 @@ var slots={};
 var freecards = [];
 var freechips = [];
 var buttons = [];
-var bind;
+var bind,osd;
 var paused=false;
 
 var draw = function() {
+    //osd works even in pause
+    osd.update();
+    osd.display();
     if (paused) 
     {
-	window.setTimeout(draw,500);
+	window.setTimeout(draw,15);
 	return;
     }
     for (var sln in slots)
@@ -556,6 +814,8 @@ var draw = function() {
     }
     bind.update();
     bind.display();
+
+
 
     for (var i=0;i<buttons.length;i++)
     {
@@ -568,6 +828,16 @@ var draw = function() {
 
 c.addEventListener('click',function(ev) {
     paused=(paused?false:true);
+    if (paused) bgmusicpause();
+    if (paused) 
+    {
+	osd.show();
+    }
+    else 
+    {
+	osd.fade();
+	bgmusicplay(); //play();
+    }
 },false);
 window.addEventListener('load',function(ev) {
     var m = RATIO;
@@ -632,10 +902,15 @@ window.addEventListener('load',function(ev) {
     
     bind = new BetIndicator(0,100);
 
+    osd = new OSD65(450,250,0);
+
     var bindrand = function() {
+	window.setTimeout(bindrand,4500);
+	if (paused) return;
 	bind.min=Math.random()*100;
 	bind.max=Math.random()*200;
-	window.setTimeout(bindrand,4500);
+	coinssndplay();
+
     }
 
     var btn = new Button('shield',WIDTH-WIDTH*0.45,HEIGHT-HEIGHT*0.16);
@@ -648,7 +923,7 @@ window.addEventListener('load',function(ev) {
     window.setTimeout(bindrand,2500);
 
     window.setTimeout(draw,0);
-    
+    bgmusicplay();
 },false);
 		 
   </script>
