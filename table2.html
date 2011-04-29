@@ -1,10 +1,13 @@
+<!DOCTYPE html>
 <html>
 <head>
 <style type='text/css'>
+
 #port {
   width:988px;
   height:849px;
   background-image:url(table.png);
+  position:absolute;
 }
     .card {
 	background-image:url(cardback.png);
@@ -56,7 +59,6 @@
 	height:160px;	
 	position:absolute;
 	background-image:url(pause.png);
-
     }
 </style>
 </head>
@@ -144,7 +146,23 @@ var csstm;
 var FORCEAUDIO = (/forceaudio=1/.exec(location.href)?true:false);
 var APPLE = /(iPad|iPhone)/.exec(navigator.userAgent)?true:false;
 var WEBKIT = /WebKit/.exec(navigator.userAgent)?true:false;
+var NORUN =     (/norun=1/.exec(location.href))?true:false;
+var IE = /MSIE/.exec(navigator.userAgent)?true:false;
+//implement Array.indexOf for MSIE :D
+if (IE) {
+if(!Array.indexOf){
+    Array.prototype.indexOf = function(obj){
+        for(var i=0; i<this.length; i++){
+				                if(this[i]==obj){
+				                    return i;
+				                }
+				            }
+				            return -1;
+				        }
+				    }
+}
 if (/nowebkit=1/.exec(location.href)) WEBKIT=false;
+if (/(&|\?)webkit=1/.exec(location.href)) WEBKIT=true;
 var audiosuffix = (APPLE?'.mp3':'.ogg'); //apple likes mp3, ff & chrome audio tag plays .ogg
     var c = document.getElementById('port');
 if (typeof(console)=='undefined') console = {log: function() { }};
@@ -167,13 +185,15 @@ if (!APPLE || FORCEAUDIO) { //instantiate normal html audio controls only for no
 	if (!FORCEAUDIO) el.style.display='none';
 	if (sounds[i]=='css') 
 	{
-	    el.addEventListener('ended',function() 
+		     var bgmp = function() 
 				{
 				    bgmusicplay();
-				},false);
+				};
+		     if (!IE) el.addEventListener('ended',bgmp,false);
+		     else el.attachEvent('onended',bgmp);
 	}
 	document.body.appendChild(el);
-	console.log("appended %o",el);
+		     //console.log("appended %o",el);
 	controls[sounds[i]]=el;
     }
 }
@@ -181,27 +201,32 @@ if (!APPLE || FORCEAUDIO) { //instantiate normal html audio controls only for no
 var chipsndplay = function() {
     if (NOSOUND) return;
     if (!FORCEAUDIO && APPLE) return;
+    if (IE) return;
 	controls['chip'].play();
 }
 var cardsndplay = function() {
     if (NOSOUND) return;
     if (!FORCEAUDIO && APPLE) return;
+		     if (IE) return;
 	controls['card'].play();
 }
 var coinssndplay = function() {    
     if (NOSOUND) return;
     if (!FORCEAUDIO && APPLE) return;
+		     if (IE) return;
 	controls['coins'].play();
 }
 
 var bgmusicpause = function() {
     if (NOSOUND) return;
+		     if (IE) return;
     if (APPLE && !FORCEAUDIO) { ifrStop('css'); }
     else
 	controls['css'].pause();
 }
 var bgmusicplay = function() {
     if (NOSOUND) return;
+		     if (IE) return;
     if (APPLE && !FORCEAUDIO) ifrPlay('css'); //we can only reliably play 1 background track with the iframe hack.
     else 
     {
@@ -280,14 +305,17 @@ function OSD65(x,y,opa) {
 	    this.el.style.zIndex=5;
 	    c.appendChild(this.el);
 	}
- 	this.el.style.top=this.y;
-	this.el.style.left=this.x;
+ 	this.el.style.top=this.y+'px';
+	this.el.style.left=this.x+'px';
 	this.el.style.opacity=this.opacity;
+        if (IE) this.el.style.filter = 'alpha(opacity='+parseInt(this.opacity*100)+')';
+        //console.log('opacity is ',this.el.style.opacity);
 	var scl = 1/this.opacity;
 	if (scl>3) scl=3;
 
 	var wkt='scale('+scl+')';
 	this.el.style.transform=
+		     this.el.style.msTransform =
 	    this.el.style.OTransform=
 	    this.el.style.MozTransform=
 	    this.el.style.webkitTransform=
@@ -448,14 +476,14 @@ function Chip(x,y,col,state) {
 	var mantrans=false;
 	if (!WEBKIT)
 	{
-	    this.el.style.top = this.y;
-	    this.el.style.left = this.x;
+	    this.el.style.top = this.y+'px';
+	    this.el.style.left = this.x+'px';
 	    mantrans=true;
 	}
 	else
 	{
 	    var wkt ='translate3d('+parseInt(this.x)+'px,'+parseInt(this.y)+'px,0px)';
-	    this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+	    this.el.style.transform=this.el.style.msTransform = this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
 	}
 	//alert(wkt); throw "bah "+WEBKIT;
 
@@ -604,8 +632,8 @@ function Card(kind,x,y,state) {
 	if (!this.el) 
 	{
 	    this.el = document.createElement('div');
-	    this.el.style.width = parseInt(CARD_WIDTH);
-	    this.el.style.height = parseInt(CARD_HEIGHT);
+	    this.el.style.width = parseInt(CARD_WIDTH)+'px';
+	    this.el.style.height = parseInt(CARD_HEIGHT)+'px';
 
 	    c.appendChild(this.el);
 	    //console.log('starting off with %o,%o',this.curx,this.cury);
@@ -614,8 +642,8 @@ function Card(kind,x,y,state) {
 	//lets try use translate() instead of .left/.top
 	if (!WEBKIT) //looks like ff / opera do not support translate\translate3d() transforms
 	{
-	    this.el.style.top=parseInt(this.cury);
-	    this.el.style.left=parseInt(this.curx);
+	    this.el.style.top=parseInt(this.cury)+'px';
+	    this.el.style.left=parseInt(this.curx)+'px';
 	    var mantrans=true;
 	}
 	else
@@ -627,7 +655,8 @@ function Card(kind,x,y,state) {
 	    var sclstr = '1,'+scl;
 	
 	var wkt =(!mantrans?'translate3d('+parseInt(this.curx)+'px,'+parseInt(this.cury)+'px,0px)':'')+' rotate('+parseInt(this.angle)+'deg) scale('+sclstr+')';
-	this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+	this.el.style.transform=this.el.style.msTransform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+					       
 
     }
     return this;
@@ -670,12 +699,15 @@ function Card(kind,x,y,state) {
 		this.el = document.createElement('div');
 		this.el.className='button '+this.name;
 		var ths = this;
-		this.el.addEventListener('mouseover',function() { 
-		    ths.mouseover=true; ths.spin++; },false);
+		var mouseovev = function() { 
+		    ths.mouseover=true; ths.spin++; };
+                if (IE) this.el.attachEvent('onmouseover',mouseovev);
+		else
+		       this.el.addEventListener('mouseover',mouseovev,false);
 		c.appendChild(this.el);
 	    }
-	    this.el.style.left = this.x;
-	    this.el.style.top = this.y;
+	    this.el.style.left = this.x+'px';
+	    this.el.style.top = this.y+'px';
 
 	    var scl=1;
 	    if (this.spin && this.spin<50) 
@@ -684,7 +716,7 @@ function Card(kind,x,y,state) {
 		scl=Math.abs(1-this.spin/100*2);
 
 	    var wkt = 'scale('+scl+',1)';
-	    this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+	    this.el.style.transform=this.el.style.msTransform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
 	    /*if (!this.img) this.img = P.loadImage(this.name+'.png');
 	    P.pushMatrix();*/
 
@@ -707,13 +739,16 @@ function Card(kind,x,y,state) {
 		this.el = document.createElement('div');
 		this.el.className='button '+this.name;
 		var ths = this;
-		this.el.addEventListener('mouseover',function() { 
-		    ths.mouseover=true; ths.spin++; },false);
+		var mouseovev = function() { 
+		    ths.mouseover=true; ths.spin++; };
+
+	        if (IE) this.el.attachEvent('onmouseover',mouseovev);
+		else this.el.addEventListener('mouseover',mouseovev,false);
 		c.appendChild(this.el);
 	    }
-	    this.el.style.left = this.x;
-	    this.el.style.top = this.y;
-	    
+	    this.el.style.left = this.x+'px';
+	    this.el.style.top = this.y+'px';
+		       //console.log(this.el.style.left,',',this.el.style.top,' and ',this.x,',',this.y);
 	    var scl=1;
 	    if (this.spin && this.spin<50) 
 	    {
@@ -725,7 +760,7 @@ function Card(kind,x,y,state) {
 	    }
 
 	    var wkt = 'rotate('+scl+'deg)';
-	    this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
+            this.el.style.MsTransform = this.el.style.transform=this.el.style.OTransform=this.el.style.MozTransform=this.el.style.webkitTransform=wkt;
 	    
 /*	    if (!this.img) this.img = P.loadImage(this.name+'.png');
 	    P.pushMatrix();
@@ -826,7 +861,7 @@ var draw = function() {
     window.setTimeout(draw,15);
 }
 
-c.addEventListener('click',function(ev) {
+var pauseev = function(ev) {
     paused=(paused?false:true);
     if (paused) bgmusicpause();
     if (paused) 
@@ -838,8 +873,11 @@ c.addEventListener('click',function(ev) {
 	osd.fade();
 	bgmusicplay(); //play();
     }
-},false);
-window.addEventListener('load',function(ev) {
+};
+if (IE) c.attachEvent('onclick',pauseev);
+else c.addEventListener('click',pauseev,false);
+
+var loadfunc = function(ev) {
     var m = RATIO;
     //chip slots
     slots['p1'] = new Slot(160/m,265/m,'top-chip','p1');
@@ -866,6 +904,7 @@ window.addEventListener('load',function(ev) {
     slots['c8'] = new Slot(CX3/m,CY3/m,'side-card','c8',0);
     
     var types = ['qs','kd'];
+    if (!NORUN) {
     for (var i=0;i<CARDS_AMT;i++)
     {
 	var crd = new Card(types[parseInt(Math.random()*2)],190,97,'back');
@@ -899,7 +938,7 @@ window.addEventListener('load',function(ev) {
 	    chip_placement(ch)
 	},Math.random()*1000);
     }
-    
+    }
     bind = new BetIndicator(0,100);
 
     osd = new OSD65(450,250,0);
@@ -918,13 +957,18 @@ window.addEventListener('load',function(ev) {
     var btn = new ButtonX2('x2',WIDTH-WIDTH*0.62,HEIGHT-HEIGHT*0.16);
     buttons.push(btn);
 
+		  if (!NORUN)
+		     {
+		     //2nd stage action demo
+		     window.setTimeout(bindrand,2500);
 
-    //2nd stage action demo
-    window.setTimeout(bindrand,2500);
-
+		     }
     window.setTimeout(draw,0);
     bgmusicplay();
-},false);
+
+}
+if (IE) window.attachEvent('onload',loadfunc);
+else window.addEventListener('load',loadfunc,false);
 		 
   </script>
 </body>
